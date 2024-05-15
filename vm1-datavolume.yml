@@ -1,15 +1,23 @@
+---
 apiVersion: cdi.kubevirt.io/v1beta1
 kind: DataVolume
 metadata:
-  name: storage-demo-vm1-storage-demo-data1
+  name: storage-demo-vm-hot-plug-disk
   namespace: demo-osmanemre
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"
+  ownerReferences:
+  - apiVersion: kubevirt.io/v1
+    blockOwnerDeletion: false
+    kind: VirtualMachine
+    name: fedora-demo-vm
+    uid: 76f51e2d-3830-4607-a3e9-9cfc01554b6e
 spec:
-  preallocation: false
-  source:
-    blank: {}
   storage:
     resources:
       requests:
-        storage: 5Gi
-    storageClassName: ocs-storagecluster-ceph-rbd-virtualization
-
+        storage: 10Gi
+    storageClassName: ocs-storagecluster-ceph-rbd-replica2
+  preallocation: false
+  source:
+    blank: {}
