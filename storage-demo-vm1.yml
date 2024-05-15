@@ -18,7 +18,7 @@ spec:
           resources:
             requests:
               storage: 30Gi
-          storageClassName: ocs-storagecluster-ceph-rbd-replica2
+          storageClassName: ocs-storagecluster-ceph-rbd-virtualization
   running: true
   template:
     metadata:
@@ -47,11 +47,9 @@ spec:
               disk:
                 bus: virtio
               name: cloudinitdisk
-          interfaces:
-            - macAddress: '02:a4:1a:00:00:78'
-              masquerade: {}
-              model: virtio
-              name: default
+            - disk:
+                bus: scsi
+              name: storage-demo-data1
           networkInterfaceMultiqueue: true
           rng: {}
         machine:
@@ -74,3 +72,7 @@ spec:
               password: developer
               chpasswd: { expire: False }
           name: cloudinitdisk
+        - dataVolume:
+            hotpluggable: true
+            name: storage-demo-vm1-storage-demo-data1
+          name: storage-demo-data1
