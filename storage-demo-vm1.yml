@@ -1,34 +1,37 @@
+
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
-  name: storage-demo-vm1
+  name: storage-demo-vm
   namespace: demo-osmanemre
+  labels:
+    app: fedora-demo-vm
+  annotations:
+    argocd.argoproj.io/sync-wave: "99"
 spec:
   dataVolumeTemplates:
-    - metadata:
-        creationTimestamp: null
-        name: storage-demo-vm1
+    - apiVersion: cdi.kubevirt.io/v1beta1
+      kind: DataVolume
+      metadata:
+        name: fedora-demo-vm
       spec:
-        preallocation: false
         sourceRef:
           kind: DataSource
-          name: centos-stream8
+          name: fedora
           namespace: openshift-virtualization-os-images
         storage:
           resources:
             requests:
               storage: 30Gi
-          storageClassName: ocs-storagecluster-ceph-rbd-virtualization
   running: true
   template:
     metadata:
       annotations:
         vm.kubevirt.io/flavor: small
-        vm.kubevirt.io/os: centos-stream8
+        vm.kubevirt.io/os: fedora
         vm.kubevirt.io/workload: server
-      creationTimestamp: null
       labels:
-        kubevirt.io/domain: storage-demo-vm1
+        kubevirt.io/domain: fedora-demo-vm
         kubevirt.io/size: small
     spec:
       architecture: amd64
@@ -39,35 +42,51 @@ spec:
           threads: 1
         devices:
           disks:
-            - bootOrder: 1
-              disk:
+            - disk:
                 bus: virtio
               name: rootdisk
-            - bootOrder: 2
-              disk:
+            - disk:
                 bus: virtio
               name: cloudinitdisk
             - disk:
                 bus: scsi
-              name: storage-demo-data1
+              name: hot-plug-disk
+          interfaces:
+            - macAddress: '02:a4:1a:00:00:19'
+              masquerade: {}
+              model: virtio
+              name: default
+          networkInterfaceMultiqueue: true
+          rng: {}
+        features:
+          acpi: {}
+          smm:
+            enabled: true
+        firmware:
+          bootloader:
+            efi: {}
         machine:
           type: pc-q35-rhel9.2.0
         memory:
           guest: 2Gi
         resources: {}
+      networks:
+        - name: default
+          pod: {}
       terminationGracePeriodSeconds: 180
       volumes:
         - dataVolume:
-            name: storage-demo-vm1
+            name: fedora-demo-vm
           name: rootdisk
         - cloudInitConfigDrive:
-            userData: |-
+            userData: |
               #cloud-config
-              user: developer
-              password: developer
-              chpasswd: { expire: False }
+              user: fedora
+              password: fedora
+              chpasswd:
+                expire: false
           name: cloudinitdisk
         - dataVolume:
             hotpluggable: true
-            name: storage-demo-vm1-storage-demo-data1
-          name: storage-demo-data1
+            name: fedora-demo-vm-hot-plug-disk
+          name: hot-plug-disk
