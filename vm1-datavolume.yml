@@ -9,6 +9,7 @@ metadata:
       blockOwnerDeletion: false
       kind: VirtualMachine
       name: fedora-demo-vm
+      uid: ab5b2add-4fd3-4241-a423-e3286054d802
   annotations:
     argocd.argoproj.io/sync-wave: "10"
 spec:
