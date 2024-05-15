@@ -50,16 +50,11 @@ spec:
             - disk:
                 bus: scsi
               name: storage-demo-data1
-          networkInterfaceMultiqueue: true
-          rng: {}
         machine:
           type: pc-q35-rhel9.2.0
         memory:
           guest: 2Gi
         resources: {}
-      networks:
-        - name: default
-          pod: {}
       terminationGracePeriodSeconds: 180
       volumes:
         - dataVolume:
