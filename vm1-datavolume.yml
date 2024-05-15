@@ -4,6 +4,11 @@ kind: DataVolume
 metadata:
   name: fedora-demo-vm-hot-plug-disk
   namespace: demo-osmanemre
+  ownerReferences:
+    - apiVersion: kubevirt.io/v1
+      blockOwnerDeletion: false
+      kind: VirtualMachine
+      name: fedora-demo-vm
   annotations:
     argocd.argoproj.io/sync-wave: "10"
 spec:
