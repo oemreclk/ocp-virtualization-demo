@@ -1,8 +1,7 @@
-
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
-  name: storage-demo-vm
+  name: fedora-demo-vm
   namespace: demo-osmanemre
   labels:
     app: fedora-demo-vm
@@ -51,13 +50,6 @@ spec:
             - disk:
                 bus: scsi
               name: hot-plug-disk
-          interfaces:
-            - macAddress: '02:a4:1a:00:00:19'
-              masquerade: {}
-              model: virtio
-              name: default
-          networkInterfaceMultiqueue: true
-          rng: {}
         features:
           acpi: {}
           smm:
@@ -70,9 +62,6 @@ spec:
         memory:
           guest: 2Gi
         resources: {}
-      networks:
-        - name: default
-          pod: {}
       terminationGracePeriodSeconds: 180
       volumes:
         - dataVolume:
